@@ -1,8 +1,17 @@
 # Usage example:
-# $ nix-shell --arg withClang true --arg spareCores 2
+# $ nix-shell --arg spareCores 2 --arg withDebug true
 { pkgs ? import <nixpkgs> { }, spareCores ? 0, withDebug ? false, }:
 let
-  inherit (pkgs.lib) optionals strings;
+  inherit (pkgs.lib) strings;
+
+  pinnedPkgs = import (builtins.fetchTarball {
+    url = "https://github.com/NixOS/nixpkgs/archive/50dc918cfe0dd0419403c957bcf395e881214416.tar.gz";
+    sha256 = "sha256:1wiz5n0l4mqjbrnqh2zs14lsfcb668xpv5b5psyzf5fdqq15mdbs";
+  }) {};
+
+  # Lief v 0.13.2
+  pinnedLief = pinnedPkgs.python310Packages.lief;
+
   binDirs = [ "$PWD/build/src" "$PWD/build/src/qt" ];
   jobs = if (strings.hasSuffix "linux" builtins.currentSystem) then
     "$(($(nproc)-${toString spareCores}))"
@@ -82,7 +91,7 @@ in pkgs.mkShell {
     python310
     python310Packages.autopep8
     python310Packages.flake8
-    python310Packages.lief
+    pinnedLief
     python310Packages.mypy
     python310Packages.pyzmq
     python310Packages.requests
