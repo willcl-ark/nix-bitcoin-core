@@ -28,8 +28,8 @@ jobs:
         ref: ${{ matrix.bitcoin-ref }}
         path: bitcoin
     - name: Build with dev flake
-      run: nix develop --command "bash -c 'cd bitcoin && cmake -B build && cmake --build build --parallel'"
+      run: nix develop --command bash -c "cmake -B build && cmake --build build --parallel"
     - name: Run unit tests with nix-shell
-      run: nix develop --command "bash -c 'cd bitcoin && ctest --test-dir build --parallel'"
+      run: nix develop --command bash -c "ctest --test-dir build --parallel"
     - name: Run functional tests with nix-shell
-      run: nix develop --command "bash -c 'cd bitcoin && python3 build/test/functional/test_runner.py -j4 --tmpdir ${{ github.workspace}}/test'"
+      run: nix develop --command bash -c "python3 build/test/functional/test_runner.py -j4 --tmpdir ${{ github.workspace}}/test"
