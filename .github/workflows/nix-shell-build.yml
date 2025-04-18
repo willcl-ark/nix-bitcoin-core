@@ -10,6 +10,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         nixos-version: [ "nixos-24.11", "nixos-unstable" ]
         bitcoin-ref: [ "master", "v29.0" ]
